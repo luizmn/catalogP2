@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, session
+from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, session  # NOQA
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
@@ -12,11 +12,10 @@ import httplib2
 import json
 from flask import make_response
 import requests
-#import functions
 
 app = Flask(__name__)
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']  # NOQA
 APPLICATION_NAME = "Car Parts Catalog"
 
 # Connect to Database and create database session
@@ -46,29 +45,28 @@ def fbconnect():
     access_token = request.data
     print "access token received %s " % access_token
 
-
     app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_id']
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (  # NOQA
         app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
-
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.8/me"
     '''
-        Due to the formatting for the result from the server token exchange we have to
-        split the token first on commas and select the first index which gives us the key : value
-        for the server access token then we split it on colons to pull out the actual token value
-        and replace the remaining quotes with nothing so that it can be used directly in the graph
-        api calls
+        Due to the formatting for the result from the server token exchange we
+        have to split the token first on commas and select the first index
+        which gives us the key : value for the server access token then we
+        split it on colons to pull out the actual token value and replace the
+        remaining quotes with nothing so that it can be used directly in the
+        graph api calls
     '''
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
-    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
+    url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token  # NOQA
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     # print "url sent for API access:%s"% url
@@ -79,11 +77,11 @@ def fbconnect():
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
-    # The token must be stored in the login_session in order to properly logout
+    # The token must be stored in the login_session in order to logout
     login_session['access_token'] = token
 
     # Get user picture
-    url = 'https://graph.facebook.com/v2.8/me/picture?access_token=%s&redirect=0&height=200&width=200' % token
+    url = 'https://graph.facebook.com/v2.8/me/picture?access_token=%s&redirect=0&height=200&width=200' % token  # NOQA
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
@@ -103,7 +101,7 @@ def fbconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '  # NOQA
 
     flash("Now logged in as %s" % login_session['username'])
     return output
@@ -114,7 +112,7 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)  # NOQA
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -172,8 +170,7 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps('Current user is already connected.'), 200)  # NOQA
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -205,8 +202,9 @@ def gconnect():
     output += login_session['username']
     output += '!</h1>'
     output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += login_session['picture']  # NOQA
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;'
+    output += ' " -webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -232,7 +230,9 @@ def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
-    except:
+    except NoResultFound:
+        #user = []
+        print "user not found"
         return None
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
@@ -255,7 +255,7 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed to revoke token for given user.', 400))  # NOQA
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -263,7 +263,6 @@ def gdisconnect():
 # JSON APIs to view Category Information
 @app.route('/category/<int:category_id>/list/JSON')
 def categoryListJSON(category_id):
-    #categories = session.query(Category).filter_by(id=category_id).one()
     categories = session.query(Category).filter_by(id=category_id).all()  # NOQA
     return jsonify(Categories=[i.serialize for i in categories])
 
@@ -279,10 +278,12 @@ def categoriesJSON():
     categories = session.query(Category).all()
     return jsonify(categories=[r.serialize for r in categories])
 
+
 @app.route('/category/listex/JSON')
 def productsJSON():
     categories = session.query(Product).all()
     return jsonify(categories=[r.serialize for r in categories])
+
 
 # Show all categories - OK
 @app.route('/')
@@ -293,6 +294,7 @@ def showCategories():
         return render_template('publiccategories.html', categories=categories)
     else:
         return render_template('categories.html', categories=categories)
+
 
 # Create a new Category
 @app.route('/category/new/', methods=['GET', 'POST'])
@@ -317,7 +319,7 @@ def editCategory(category_id):
     categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
         return redirect('/login')
-    editedCategory = session.query(Category).filter_by(id=category_id).one()  # NOQA
+    editedCategory = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         if request.form['name']:
             editedCategory.name = request.form['name']
@@ -335,16 +337,18 @@ def deleteCategory(category_id):
     categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
         return redirect('/login')
-    categoryToDelete = session.query(Category).filter_by(id=category_id).one()  # NOQA
+    categoryToDelete = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         session.delete(categoryToDelete)
         flash('%s Successfully Deleted' % categoryToDelete.name)
         session.commit()
         return redirect(url_for('showCategories',
-                                category_id=category_id, categories=categories))
+                                category_id=category_id,
+                                categories=categories))
     else:
         return render_template('deletecategory.html',
-                               category=categoryToDelete, categories=categories)
+                               category=categoryToDelete,
+                               categories=categories)
 
 
 # Show products list
@@ -355,15 +359,22 @@ def showList(category_id):
     try:
         category = session.query(Category).filter_by(id=category_id).one()
     except NoResultFound:
-        category ='1'
+        category = '1'
 
     creator = getUserInfo(category.user_id)
     items = session.query(Product).filter_by(category_id=category_id).all()
-    if 'username' not in login_session or creator.id != login_session['user_id']:
-        return render_template('publiclist.html', items=items, category=category, creator=creator, categories=categories)
+    if 'username' not in login_session or creator.id != login_session['user_id']:  # NOQA
+        return render_template('publiclist.html',
+                               items=items,
+                               category=category,
+                               creator=creator,
+                               categories=categories)
     else:
-        return render_template('list.html', items=items, category=category, creator=creator, categories=categories)
-
+        return render_template('list.html',
+                               items=items,
+                               category=category,
+                               creator=creator,
+                               categories=categories)
 
 
 # Create a new Product
@@ -374,7 +385,7 @@ def newProduct(category_id):
         return redirect('/login')
     category = session.query(Category).filter_by(id=category_id).first()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to add products to this category. Please create your own category in order to add items.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized to add products to this category. Please create your own category in order to add items.');}</script><body onload='myFunction()'>"  # NOQA
     if request.method == 'POST':
         newProduct = Product(name=request.form['name'],
                              description=request.form['description'],
@@ -386,15 +397,15 @@ def newProduct(category_id):
         flash('%s Successfully Created' % newProduct.name)
         session.commit()
         return redirect(url_for('showList', category_id=category_id))
-#return redirect(url_for('showList', category=category))
-
     else:
-        return render_template('newproduct.html', category=category, categories=categories)
+        return render_template('newproduct.html',
+                               category=category,
+                               categories=categories)
 
 
 # Edit a product
 
-@app.route('/category/<int:category_id>/list/<int:product_id>/edit', methods=['GET', 'POST'])
+@app.route('/category/<int:category_id>/list/<int:product_id>/edit', methods=['GET', 'POST'])  # NOQA
 def editProduct(category_id, product_id):
     categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
@@ -402,7 +413,7 @@ def editProduct(category_id, product_id):
     editedItem = session.query(Product).filter_by(id=product_id).one()
     category = session.query(Category).filter_by(id=category_id).one()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to edit this item in this category. Please create your own category in order to edit items.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized to edit this item in this category. Please create your own category in order to edit items.');}</script><body onload='myFunction()'>"  # NOQA
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -413,13 +424,19 @@ def editProduct(category_id, product_id):
         session.add(editedItem)
         session.commit()
         flash('Successfully Edited')
-        return redirect(url_for('showList', category_id=category_id, categories=categories))
+        return redirect(url_for('showList',
+                                category_id=category_id,
+                                categories=categories))
     else:
-        return render_template('editproduct.html', category_id=category_id, product_id=product_id, item=editedItem, categories=categories)
+        return render_template('editproduct.html',
+                               category_id=category_id,
+                               product_id=product_id,
+                               item=editedItem,
+                               categories=categories)
 
 
 # Delete Product
-@app.route('/category/<int:category_id>/list/<int:product_id>/delete', methods=['GET', 'POST'])
+@app.route('/category/<int:category_id>/list/<int:product_id>/delete', methods=['GET', 'POST'])  # NOQA
 def deleteProduct(category_id, product_id):
     categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
@@ -427,14 +444,18 @@ def deleteProduct(category_id, product_id):
     category = session.query(Category).filter_by(id=category_id).one()
     itemToDelete = session.query(Product).filter_by(id=product_id).one()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to delete this item to this category. Please create your own category in order to delete items.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized to delete this item to this category. Please create your own category in order to delete items.');}</script><body onload='myFunction()'>"  # NOQA
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
         flash('Successfully Deleted')
-        return redirect(url_for('showList', category_id=category_id, categories=categories))
+        return redirect(url_for('showList',
+                                category_id=category_id,
+                                categories=categories))
     else:
-        return render_template('deleteproduct.html', item=itemToDelete, categories=categories)
+        return render_template('deleteproduct.html',
+                               item=itemToDelete,
+                               categories=categories)
 
 
 # Show About page
@@ -442,7 +463,6 @@ def deleteProduct(category_id, product_id):
 def showAbout():
     categories = session.query(Category).order_by(asc(Category.name))
     return render_template('about.html', categories=categories)
-
 
 
 # Disconnect based on provider
@@ -471,4 +491,4 @@ def disconnect():
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)

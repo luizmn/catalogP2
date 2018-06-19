@@ -30,7 +30,8 @@
 </div>
 
 {% if items !=[] %}
-<div class="row">
+<!--<div class="row">-->
+<div class="flex-container">
     <div class="col-md-1"></div>
     <div class="col-md-3">
         <h2>Products</h2>
@@ -38,7 +39,7 @@
         <div class="menu-item">
             {% if i.picture != [] %}
                 <figure class="creator">
-                    <img src="{{i.picture}}" alt="{{i.name}}&nbsp;image">
+                    <img src="{{i.picture}}" alt="{{i.name}}&nbsp;image" class="item-image" />
                 </figure>
             {% endif %}
             <h3>{{i.name}}</h3>
@@ -59,3 +60,10 @@ No products yet.
 
 
 
+<div class="flex-container">
+    <div>
+        <h4>Cars</h4>
+        <picture>
+            <img src="./images/porsche-model.png" alt="Porsche 911 GT2"  />
+        </picture>
+    </div>

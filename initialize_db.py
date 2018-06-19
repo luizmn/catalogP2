@@ -25,7 +25,7 @@ session.commit()
 
 # Add items in suspension category
 product1 = Product(user_id=1, name="Fox Front Shocks", description="Fox Shocks are used in off-road vehicles. Comfort and endurance in all-terrain.",
-                     price="$250.99", picture="http://www.caravanparkproducts.co.uk/advtiserlogos/no-image.jpg", category=category1)
+                     price="$250.99", picture="https://cdn3.volusion.com/sxegw.zwlry/v/vspfiles/photos/FOX-883-24-02X-2.jpg", category=category1)
 session.add(product1)
 session.commit()
 
