@@ -25,12 +25,12 @@ session.commit()
 
 # Add items in suspension category
 product1 = Product(user_id=1, name="Fox Front Shocks", description="Fox Shocks are used in off-road vehicles. Comfort and endurance in all-terrain.",
-                     price="$250.99", category=category1)
+                     price="$250.99", picture="http://www.caravanparkproducts.co.uk/advtiserlogos/no-image.jpg", category=category1)
 session.add(product1)
 session.commit()
 
 product2 = Product(user_id=1, name="Coil Springs", description="Restore OEM-standard handling and smoother ride to your vehicle.",
-                     price="$45.00", category=category1)
+                     price="$45.00", picture="http://www.caravanparkproducts.co.uk/advtiserlogos/no-image.jpg", category=category1)
 session.add(product2)
 session.commit()
 
@@ -42,12 +42,12 @@ session.commit()
 
 # Add items in suspension category
 product1 = Product(user_id=1, name="H7 Led Bulb", description="Each bulb has 2 pcs of high power COB chips made in Taiwan, perfect light pattern without dark spot,6000-6500K",
-                     price="$20.98", category=category2)
+                     price="$20.98", picture="http://www.caravanparkproducts.co.uk/advtiserlogos/no-image.jpg", category=category2)
 session.add(product1)
 session.commit()
 
 product2 = Product(user_id=1, name="Led Light Bar", description="The appropriate mix and match of spot beams and flood beams provides a long irradiation distance and broad view.",
-                     price="$27.41", category=category2)
+                     price="$27.41", picture="http://www.caravanparkproducts.co.uk/advtiserlogos/no-image.jpg", category=category2)
 session.add(product2)
 session.commit()
 

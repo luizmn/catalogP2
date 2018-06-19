@@ -1,29 +1,65 @@
-<html>
-    <head>
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-        </head>
-    <body>
-        <h1>New Menu Item</h1>
-        <form action="#" method = 'post'>
-            <p>Name:</p>
-                <input type ='text' size='30' name='name'>
-            <p>Description:</p>
-                <input type ='text' size='30' name='description'>
-            <p>Price:</p>
-                <input type ='text' size='30' name='price'>
-            <p>Category:</p>
-            <fieldset>
-                <p>
-                <label>Select category</label>
-                <select id = "myList">
-                    {% for category in categories %}
-                        <option value = "{{category.id}}">{{category.name}}</option>
-                    {% endfor %}
-                </select>
-                </p>
-            </fieldset>
-           </br>
-            <input type='submit' value='Create'>
-        </form>
-    </body>
-</html>
+{% extends "main.html" %}
+{% block content %}
+<div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+    <ul>
+        {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+</div>
+<div class="row banner main">
+    <div class="col-md-1"></div>
+</div>
+<div class="row padding-top padding-bottom">
+    <div class="col-md-1"></div>
+    <div class="col-md-10 padding-none">
+        <h2>Actions</h2>
+        <a href="{{url_for('newProduct', category_id = category.id )}}">
+            <button class="btn-group btn-group-sm" id="new-product">
+                <span class="octicon octicon-diff-added"></span>
+                Add Product
+            </button>
+        </a>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+<div class="col-md-10 padding-none">
+    <h2>New Product</h2>
+    <form action="#" method = "post">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type ="text" maxlength="50" class="form-control" name="name"placeholder="Product name">
+                <label for="description">Description:</label>
+                <textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="Product description"></textarea>
+                <label for="price">Price:</label>
+                <div class="input-group">
+                    <div class="input-group-addon">$</div>
+                        <input type ="text" class="form-control" maxlength="10" name="price" placeholder="Price in $">
+                    </div>
+                <div class="form-group">
+                    <fieldset>
+                    <label>Select category:</label>
+                    <select id = "category" class="form-control">
+                        {% for i in categories %}
+                            <option name="category" value = "{{i.id}}">{{i.name}}</option>
+                        {% endfor %}
+                    </select>
+
+                </fieldset>
+                    <div class="form-group">
+                    <label for="name">Picture:</label>
+                    <input type ="text" maxlength="150" class="form-control" name="picture" placeholder="Product link picture. Ex.:http://www.image.com/product.jpg">
+</div>
+                        </div>
+
+                <button type="submit" class="btn-group btn-group-sm" id="submit" type="submit">
+                    <span class="octicon octicon-check" aria-hidden="true"></span>&nbsp;Create</button>
+                </div>
+    </form></div>
+{% endblock %}

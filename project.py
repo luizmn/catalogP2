@@ -314,6 +314,7 @@ def newCategory():
 # Edit a Category
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
 def editCategory(category_id):
+    categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
         return redirect('/login')
     editedCategory = session.query(Category).filter_by(id=category_id).one()  # NOQA
@@ -322,15 +323,16 @@ def editCategory(category_id):
             editedCategory.name = request.form['name']
             flash('Category Successfully Edited %s' %
                   editedCategory.name)
-            return redirect(url_for('showCategories'))
+            return redirect(url_for('showCategories', categories=categories))
     else:
         return render_template('editcategory.html',
-                               category=editedCategory)
+                               category=editedCategory, categories=categories)
 
 
 # Delete a Category
 @app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
 def deleteCategory(category_id):
+    categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
         return redirect('/login')
     categoryToDelete = session.query(Category).filter_by(id=category_id).one()  # NOQA
@@ -339,10 +341,10 @@ def deleteCategory(category_id):
         flash('%s Successfully Deleted' % categoryToDelete.name)
         session.commit()
         return redirect(url_for('showCategories',
-                                category_id=category_id))
+                                category_id=category_id, categories=categories))
     else:
         return render_template('deletecategory.html',
-                               category=categoryToDelete)
+                               category=categoryToDelete, categories=categories)
 
 
 # Show products list
@@ -419,6 +421,7 @@ def editProduct(category_id, product_id):
 # Delete Product
 @app.route('/category/<int:category_id>/list/<int:product_id>/delete', methods=['GET', 'POST'])
 def deleteProduct(category_id, product_id):
+    categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
         return redirect('/login')
     category = session.query(Category).filter_by(id=category_id).one()
@@ -429,9 +432,9 @@ def deleteProduct(category_id, product_id):
         session.delete(itemToDelete)
         session.commit()
         flash('Successfully Deleted')
-        return redirect(url_for('showList', category_id=category_id))
+        return redirect(url_for('showList', category_id=category_id, categories=categories))
     else:
-        return render_template('deleteproduct.html', item=itemToDelete)
+        return render_template('deleteproduct.html', item=itemToDelete, categories=categories)
 
 
 # Show About page

@@ -1,21 +1,29 @@
-<html>
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
-
-<body>
-<h1> Are you sure you want to delete {{product.name}}? </h1>
-
+{% extends "main.html" %}
+{% block content %}
+<div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+<div class="row banner main">
+    <div class="col-md-1"></div>
+</div>
+<div class="row padding-top padding-bottom">
+    <div class="col-md-1"></div>
+    <div class="col-md-1"></div>
+</div>
 <form action="#" method = 'post'>
-
-<input type='submit', value = 'Delete'>
-
-
-
-
+    <h1> Are you sure you want to delete {{item.name}}? </h1>
+    <button type="submit" class="btn-group btn-group-sm" id="submit">
+        <span class="octicon octicon-stop"></span>&nbsp;Delete</button>
+    </button>
 </form>
+<a href = '{{url_for('showList', category_id = item.id)}}'> Cancel </a>
 
-<a href = '#'> Cancel </a>
-</body>
-
-</html>
+{% endblock %}

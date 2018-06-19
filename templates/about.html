@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+{% block content %}
+<div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+</div>
+<div class="row banner main">
+    <div class="col-md-1"></div>
+</div>
+<div>
+    <h2>About Car Parts Catalog</h2>
+    <p class="main">
+            We are an online company that connects consumers and suppliers.
+            Whenever you need an aftermarket part for your car, we may have it
+            or may order direct from manufacturers, reducing the final cost to
+            the consumer.<br>
+            You can reach using the emails below:
+            <br><br>
+            For sales, parts ordering/search:<br>
+            <a href="mailto:sales@carparts.com">sales@carparts.com</a><br><br>
+            General help with the site:<br>
+            <a href="mailto:help@carparts.com"Support>help@carparts.com</a>
+    </p>
+</div>
+{% endblock %}
+

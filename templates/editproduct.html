@@ -1,19 +1,36 @@
-<html>
-    <head>
-        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-    </head>
-    <body>
+{% extends "main.html" %}
+{% block content %}
+<div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+</div>
+<div class="row banner main">
+    <div class="col-md-1"></div>
+</div>
+<div class="row padding-top padding-bottom">
+    <div class="col-md-1"></div>
+    <div class="col-md-1"></div>
+</div>
         <h1> Edit Product </h1>
         <form action="#" method = 'post'>
             <p>Name:</p>
-            <input type ='text' size='30' name='name' placeholder = '{{product.name }}'>
+            <input type ='text' size='30' name='name' placeholder = '{{item.name }}'>
             <p>Description:</p>
-            <input type ='text' size='30' name='description' placeholder = '{{product.description}}'>
+            <input type ='text' size='30' name='description' placeholder = '{{item.description}}'>
             <p>Price:</p>
-            <input type ='text' size='30' name='price' placeholder = '{{product.price}}'>
+            <input type ='text' size='30' name='price' placeholder = '{{item.price}}'>
+            <p>Picture:</p>
+            <input type ='text' size='200' name='price' placeholder = '{{item.picture}}'>
             <input type='submit' value='Edit'>
-            <a href = '#'> Cancel </a>
+            <a href = '{{url_for('showList', category_id = item.id)}}'> Cancel </a>
         </form>
-    </body>
-</html>
 
+{% endblock %}

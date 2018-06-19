@@ -1,13 +1,40 @@
-<html>
-    <head>
-        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-    </head>
-    <body>
-        <h1>New Category</h1>
-        <form action="#" method = 'post'>
-            <p>Name:</p>
-            <input type ='text' size='30' name='name'>
-            <input type='submit' value='Create'>
-        </form>
-    </body>
-</html>
+{% extends "main.html" %}
+{% block content %}
+<div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+    <ul>
+        {% for message in messages %}
+        <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+</div>
+<div class="row banner main">
+    <div class="col-md-1"></div>
+</div>
+<div class="row padding-top padding-bottom">
+    <div class="col-md-1"></div>
+    <div class="col-md-10 padding-none">
+        <h2>Actions</h2>
+        <a href="{{url_for('newCategory')}}">
+            <button class="btn-group btn-group-sm" id="new-category">
+                <span class="octicon octicon-diff-added"></span>
+                Add Category
+            </button>
+        </a>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+<div class="col-md-10 padding-none">
+    <h2>New Category</h2>
+    <form action="#" method = 'post'>
+        <p>Name:</p>
+        <input type ='text' size='30' name='name'>
+        <input type='submit' value='Create'>
+    </form>
+</div>
+{% endblock %}

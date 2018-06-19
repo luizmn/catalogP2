@@ -1,13 +1,10 @@
 {% extends "main.html" %}
 {% block content %}
-{% include "header.html" %}
-
-        <div class="row banner menu">
+        <div>
             <div class="col-md-11 col-md-offset-1 padding-none">
-                <h1>Categories</h1>
+                <h1>Automotive parts</h1>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-12">
                 {% with messages = get_flashed_messages() %}
@@ -21,21 +18,42 @@
                 {% endwith %}
             </div>
         </div>
-        {% if categories !=[] %}
-        <div class="row">
-            <div class="menu-item">
-                {% for i in categories %}
-                <a href = "{{url_for('showList', category_id = i.id)}}">
-                    <div class="row">
-                        <div class="col-md-1"></div>
-                        <div class="col-md-10 restaurant-list">
-                            <h3>{{i.name}}</h3>
-                        </div>
-                        <div class="col-md-1"></div>
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
+
+<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <div class="carousel-item active">
+            <img class="d-block img-fluid" src="https://irp-cdn.multiscreensite.com/20691cf6/dms3rep/multi/desktop/Transmission1-900x400.jpg" alt="Transmission-1">
         </div>
-    {% endif %}
+        <div class="carousel-item">
+            <img class="d-block img-fluid" src="http://www.speedautocars.com/wp-content/uploads/2017/08/Auto-Parts-Supplier-Online-900x400.jpeg" alt="Parts-2">
+        </div>
+        <div class="carousel-item">
+            <img class="d-block img-fluid" src="http://www.speedautocars.com/wp-content/uploads/2018/01/Engine-Temperature-Sensor-900x400.jpg" alt="Engine-3">
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+<div class="row">
+    <h2>Hundreds of suppliers.</h2>
+    <p>
+        Car Parts Catalog has information over 200+ suppliers and manufacturers of aftermarket replacement parts. If you can't find the part you need don't hesitate, contact us.
+    </p>
+    <p>
+        Just select a category on the left menu and start browsing our catalog.
+    </p>
+</div>
+
 {% endblock %}
