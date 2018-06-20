@@ -29,31 +29,20 @@
     <div class="col-md-1"></div>
 </div>
 
-{% if items !=[] %}
 <!--<div class="row">-->
 <div class="flex-container">
     <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <h2>Products</h2>
-        {% for i in items %}
+    <div class="col-md-12">
         <div class="menu-item">
-            {% if i.picture != [] %}
+            {% if item.picture != [] %}
                 <figure class="creator">
-                    <img src="{{i.picture}}" alt="{{i.name}}&nbsp;image" class="item-image" />
+                    <img src="{{item.picture}}" alt="{{item.name}}&nbsp;image" class="item-image" />
                 </figure>
             {% endif %}
-            <h3><a href = "{{url_for('showProduct', category_id = category.id, product_id = i.id)}}">{{i.name}}</a></h3>
-            <p><a href = "{{url_for('editProduct', category_id = category.id, product_id = i.id)}}">Edit</a> |
-            <a href = "{{url_for('deleteProduct', category_id = category.id, product_id = i.id)}}">Delete</a></p>
-            <p>{{i.description}}</p>
-            <p class="menu-price">{{i.price}}</p>
+            <h3>{{item.name}}</h3>
+            <p>{{item.description}}</p>
+            <p class="menu-price">{{item.price}}</p>
         </div>
-        {% endfor %}
     </div>
 </div>
-{% elif items ==[] %}
-<div class="col-md-1"></div>
-No products yet.
-</div>
-{% endif %}
 {% endblock %}

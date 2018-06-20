@@ -22,8 +22,12 @@
 {% if items !=[] %}
 <div class="row">
     <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <h2>Products</h2>
+    <div class="col-md-4">
+        {% if quantity != 1 %}
+            <h2>{{category.name}} ({{qtyproducts}} items)
+        {% else %}
+            <h2>{{category.name}} Items ({{qtyproducts}} item)
+        {% endif %}
         {% for i in items %}
         <div class="menu-item">
             {% if i.picture != [] %}
@@ -31,7 +35,7 @@
                     <img src="{{i.picture}}" alt="{{i.name}}&nbsp;image">
                 </figure>
             {% endif %}
-            <h3>{{i.name}}</h3>
+            <h3><a href = "{{url_for('showProduct', category_id = category.id, product_id = i.id)}}">{{i.name}}</a></h3>
             <p>{{i.description}}</p>
             <p class="menu-price">{{i.price}}</p>
         </div>

@@ -368,18 +368,21 @@ def showList(category_id):
 
     creator = getUserInfo(category.user_id)
     items = session.query(Product).filter_by(category_id=category_id).all()
+    qtyproducts = len(items)
     if 'username' not in login_session or creator.id != login_session['user_id']:  # NOQA
         return render_template('publiclist.html',
                                items=items,
                                category=category,
                                creator=creator,
-                               categories=categories)
+                               categories=categories,
+                               qtyproducts=qtyproducts)
     else:
         return render_template('list.html',
                                items=items,
                                category=category,
                                creator=creator,
-                               categories=categories)
+                               categories=categories,
+                               qtyproducts=qtyproducts)
 
 
 # Create a new Product
@@ -437,6 +440,26 @@ def editProduct(category_id, product_id):
                                category_id=category_id,
                                product_id=product_id,
                                item=editedItem,
+                               categories=categories)
+
+# Show product page
+
+@app.route('/category/<int:category_id>/list/<int:product_id>/show', methods=['GET', 'POST'])  # NOQA
+def showProduct(category_id, product_id):
+    categories = session.query(Category).order_by(asc(Category.name))
+    item = session.query(Product).filter_by(id=product_id).one()
+    category = session.query(Category).filter_by(id=category_id).one()
+    if 'username' not in login_session:
+        return render_template('publicinfo.html',
+                                category=category,
+                                product_id=product_id,
+                                item=item,
+                                categories=categories)
+    else:
+        return render_template('productinfo.html',
+                               category=category,
+                               product_id=product_id,
+                               item=item,
                                categories=categories)
 
 
