@@ -15,7 +15,7 @@ This README assumes you have somw knowledge in Python.
 * VirtualBox
 * Vagrant
 * Udacity Vagrant configuration
-* Flask-WTF
+* Flask-WTF (CSRF)
 
 
 ###Instructions
