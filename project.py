@@ -232,7 +232,6 @@ def getUserID(email):
         user = session.query(User).filter_by(email=email).one()
         return user.id
     except NoResultFound:
-        #user = []
         print "user not found"
         return None
 
@@ -442,8 +441,8 @@ def editProduct(category_id, product_id):
                                item=editedItem,
                                categories=categories)
 
-# Show product page
 
+# Show product page
 @app.route('/category/<int:category_id>/list/<int:product_id>/show', methods=['GET', 'POST'])  # NOQA
 def showProduct(category_id, product_id):
     categories = session.query(Category).order_by(asc(Category.name))
@@ -451,10 +450,11 @@ def showProduct(category_id, product_id):
     category = session.query(Category).filter_by(id=category_id).one()
     if 'username' not in login_session:
         return render_template('publicinfo.html',
-                                category=category,
-                                product_id=product_id,
-                                item=item,
-                                categories=categories)
+                               category=category,
+                               product_id=product_id,
+                               item=item,
+                               categories=categories)
+
     else:
         return render_template('productinfo.html',
                                category=category,

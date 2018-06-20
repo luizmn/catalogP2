@@ -36,12 +36,15 @@
         <div class="menu-item">
             {% if item.picture != [] %}
             <figure class="creator">
-                <img src="{{item.picture}}" alt="{{item.name}}&nbsp;image" class="item-image" />
+                <img src="{{item.picture}}" alt="{{item.name}}&nbsp;image"
+                class="item-image" />
             </figure>
             {% endif %}
             <h3>{{item.name}}</h3>
-            <p><a href = "{{url_for('editProduct', category_id = category.id, product_id = item.id)}}">Edit</a> |
-            <a href = "{{url_for('deleteProduct', category_id = category.id, product_id = item.id)}}">Delete</a></p>
+            <p><a href = "{{url_for('editProduct', category_id = category.id,
+                product_id = item.id)}}">Edit</a> |
+            <a href = "{{url_for('deleteProduct', category_id = category.id,
+                product_id = item.id)}}">Delete</a></p>
             <p>{{item.description}}</p>
             <p class="menu-price">{{item.price}}</p>
         </div>
