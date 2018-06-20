@@ -32,8 +32,9 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
+    categories = session.query(Category).order_by(asc(Category.name))
     # return "The current session state is %s" % login_session['state']
-    return render_template('login.html', STATE=state)
+    return render_template('login.html', STATE=state, categories=categories)
 
 
 @app.route('/fbconnect', methods=['POST'])
@@ -261,26 +262,30 @@ def gdisconnect():
 
 
 # JSON APIs to view Category Information
-@app.route('/category/<int:category_id>/list/JSON')
+@app.route('/categories/<int:category_id>/JSON')
 def categoryListJSON(category_id):
+    """Returns JSON of one category"""
     categories = session.query(Category).filter_by(id=category_id).all()  # NOQA
     return jsonify(Categories=[i.serialize for i in categories])
 
 
-@app.route('/category/<int:category_id>/list/<int:list_id>/JSON')
+@app.route('/products/<int:category_id>/<int:list_id>/JSON')
 def listItemJSON(category_id, list_id):
+    """Returns JSON of one product in one category"""
     categories = session.query(Category).filter_by(id=category_id).one()
     return jsonify(categories=categories.serialize)
 
 
-@app.route('/category/JSON')
+@app.route('/categories/JSON')
 def categoriesJSON():
+    """Returns JSON of all categories"""
     categories = session.query(Category).all()
     return jsonify(categories=[r.serialize for r in categories])
 
 
-@app.route('/category/listex/JSON')
+@app.route('/products/JSON')
 def productsJSON():
+    """Returns JSON of all products in catalog"""
     categories = session.query(Product).all()
     return jsonify(categories=[r.serialize for r in categories])
 
