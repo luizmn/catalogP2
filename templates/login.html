@@ -8,27 +8,26 @@
                 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
                     integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
                     crossorigin="anonymous">
-                    <link rel=stylesheet type=text/css
-                        href="{{ url_for('static', filename='styles.css') }}">
-                        <!-- Github octicons -->
-                        <link rel="stylesheet"
-                            href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.css">
-                            <link rel="stylesheet"
-                                href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.svg">
-                                <!-- Custom styles for this template -->
-                                <link rel=stylesheet type=text/css
-                                    href="{{ url_for('static', filename='css/shop-homepage.css') }}">
-                                    <!-- Bootstrap core JavaScript -->
-                                    <script src="{{ url_for('static', filename='jquery/jquery.min.js') }}">
-                                        </script>
-                                    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}">
-                                        </script>
-                                    <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-                                    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
-                                        </script>
-                                    <script src="//apis.google.com/js/platform.js?onload=start"> </script>
-                                    <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
-                                    </head>
+                <link rel=stylesheet type=text/css
+                    href="{{ url_for('static', filename='styles.css') }}">
+                <!-- Github octicons -->
+                <link rel="stylesheet"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.css">
+                <link rel="stylesheet"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.svg">
+                <!-- Custom styles for this template -->
+                <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/shop-homepage.css') }}">
+                <!-- Bootstrap core JavaScript -->
+                <script src="{{ url_for('static', filename='jquery/jquery.min.js') }}">
+                </script>
+                <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}">
+                </script>
+                <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+                <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+                </script>
+                <script src="//apis.google.com/js/platform.js?onload=start"> </script>
+                <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+    </head>
 
     <body>
         <!-- Navigation -->
@@ -90,9 +89,7 @@
     {% endif %}
     {% endwith %}
 </div>
-
 <div class="row banner main">
-
 </div>
 
 <!-- GOOGLE PLUS SIGN IN-->
@@ -157,17 +154,17 @@
                 version    : 'v2.8' // use version 2.8
                 });
     };
-// Load the SDK asynchronously
-(function(d, s, id) {
- var js, fjs = d.getElementsByTagName(s)[0];
- if (d.getElementById(id)) return;
- js = d.createElement(s); js.id = id;
- js.src = "//connect.facebook.net/en_US/sdk.js";
- fjs.parentNode.insertBefore(js, fjs);
- }(document, 'script', 'facebook-jssdk'));
- // Here we run a very simple test of the Graph API after login is
- // successful.  See statusChangeCallback() for when this call is made.
- function sendTokenToServer() {
+    // Load the SDK asynchronously
+    (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    // Here we run a very simple test of the Graph API after login is
+    // successful.  See statusChangeCallback() for when this call is made.
+    function sendTokenToServer() {
      var access_token = FB.getAuthResponse()['accessToken'];
      console.log(access_token)
      console.log('Welcome!  Fetching your information.... ');
@@ -192,13 +189,13 @@
                    }
                    });
             });
- }
-</script>
-<button>
-    <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
-        <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+    }
+    </script>
+    <button>
+        <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+            <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
         </fb:login-button>
-        </button>
+    </button>
 <!--END FACEBOOK SIGN IN -->
                 </div>
             </div>

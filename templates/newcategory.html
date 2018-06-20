@@ -32,6 +32,7 @@
 <div class="col-md-10 padding-none">
     <h2>New Category</h2>
     <form action="#" method = 'post'>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <p>Name:</p>
         <input type ='text' size='30' name='name'>
         <input type='submit' value='Create'>

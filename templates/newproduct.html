@@ -32,34 +32,34 @@
 <div class="col-md-10 padding-none">
     <h2>New Product</h2>
     <form action="#" method = "post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="form-group">
             <label for="name">Name:</label>
             <input type ="text" maxlength="50" class="form-control" name="name"placeholder="Product name">
-                <label for="description">Description:</label>
-                <textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="Product description"></textarea>
-                <label for="price">Price:</label>
-                <div class="input-group">
-                    <div class="input-group-addon">$</div>
-                        <input type ="text" class="form-control" maxlength="10" name="price" placeholder="Price in $">
-                    </div>
-                <div class="form-group">
-                    <fieldset>
-                    <label>Select category:</label>
-                    <select id = "category" class="form-control">
-                        {% for i in categories %}
-                            <option name="category" value = "{{i.id}}">{{i.name}}</option>
-                        {% endfor %}
-                    </select>
-
+            <label for="description">Description:</label>
+            <textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="Product description"></textarea>
+            <label for="price">Price:</label>
+            <div class="input-group">
+                <div class="input-group-addon">$</div>
+                    <input type ="text" class="form-control" maxlength="10" name="price" placeholder="Price in $">
+                </div>
+            <div class="form-group">
+                <fieldset>
+                <label>Select category:</label>
+                <select id = "category" class="form-control">
+                    {% for i in categories %}
+                        <option name="category" value = "{{i.id}}">{{i.name}}</option>
+                    {% endfor %}
+                </select>
                 </fieldset>
-                    <div class="form-group">
-                        <label for="name">Picture:</label>
-                        <input type ="text" maxlength="250" class="form-control" name="picture" placeholder="Product link picture. Ex.:http://www.image.com/product.jpg">
-                    </div>
+                <div class="form-group">
+                    <label for="name">Picture:</label>
+                    <input type ="text" maxlength="250" class="form-control" name="picture" placeholder="Product link picture. Ex.:http://www.image.com/product.jpg">
                 </div>
-
-                <button type="submit" class="btn-group btn-group-sm" id="submit" type="submit">
-                    <span class="octicon octicon-check" aria-hidden="true"></span>&nbsp;Create</button>
-                </div>
-    </form></div>
+            </div>
+            <button type="submit" class="btn-group btn-group-sm" id="submit" type="submit">
+            <span class="octicon octicon-check" aria-hidden="true"></span>&nbsp;Create</button>
+        </div>
+    </form>
+</div>
 {% endblock %}

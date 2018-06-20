@@ -34,7 +34,11 @@
 <div class="flex-container">
     <div class="col-md-1"></div>
     <div class="col-md-3">
-        <h2>Products</h2>
+        {% if quantity != 1 %}
+            <h2>{{category.name}} ({{qtyproducts}} items)
+        {% else %}
+            <h2>{{category.name}} Items ({{qtyproducts}} item)
+        {% endif %}
         {% for i in items %}
         <div class="menu-item">
             {% if i.picture != [] %}

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash, session  # NOQA
+from flask_wtf.csrf import CSRFProtect
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
@@ -14,6 +15,7 @@ from flask import make_response
 import requests
 
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']  # NOQA
 APPLICATION_NAME = "Car Parts Catalog"
@@ -27,6 +29,7 @@ session = DBSession()
 
 
 # Create anti-forgery state token
+@csrf.exempt
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -37,6 +40,7 @@ def showLogin():
     return render_template('login.html', STATE=state, categories=categories)
 
 
+@csrf.exempt
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
@@ -108,6 +112,7 @@ def fbconnect():
     return output
 
 
+@csrf.exempt
 @app.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['facebook_id']
@@ -119,6 +124,7 @@ def fbdisconnect():
     return "you have been logged out"
 
 
+@csrf.exempt
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -235,9 +241,9 @@ def getUserID(email):
         print "user not found"
         return None
 
+
 # DISCONNECT - Revoke a current user's token and reset their login_session
-
-
+@csrf.exempt
 @app.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user.
@@ -494,6 +500,7 @@ def showAbout():
 
 
 # Disconnect based on provider
+@csrf.exempt
 @app.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
@@ -519,4 +526,5 @@ def disconnect():
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
+    csrf_secret_key = 'csrf_secrets'
     app.run(host='0.0.0.0', port=8000)

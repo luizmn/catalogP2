@@ -20,6 +20,7 @@
 </div>
 <h1> Edit Category </h1>
 <form action="{{ url_for('editCategory',category_id = category.id)}}" method = 'post'>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <p>Name:</p>
     <input type ='text' size='30' name='name' placeholder = '{{category.name }}'>
     <input type='submit' value='Edit'>

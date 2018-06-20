@@ -19,6 +19,7 @@
     <div class="col-md-1"></div>
 </div>
 <form action="#" method = 'post'>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <h1> Are you sure you want to delete "{{category.name}}"? </h1>
     <button type="submit" class="btn-group btn-group-sm" id="submit">
         <span class="octicon octicon-stop"></span>&nbsp;Delete</button>
