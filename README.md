@@ -51,7 +51,7 @@ The RESTful Web Services implemented are listed below.
 List all:  
 
 * Categories:   
-http://localhost:8000/categories/JSON  
+http://localhost:8000/categories/JSON   
 * Products:   
 http://localhost:8000/products/JSON   
 * One category  
@@ -78,3 +78,7 @@ On top right of catalog you have:
 * [Image 2](http://www.eastendtransmissionsny.com/transmission-repair-and-rebuilding)
 * [Image 3](http://www.speedautocars.com/electronic-injection-inside-the-engine-temperature-sensor/)
 * [Banner Image](http://hondamotors.sr/en/parts/damage-report/)
+
+####Github
+This project can be found in Github:
+[luizmn/catalogP2](https://github.com/luizmn/catalogP2)
