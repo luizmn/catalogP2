@@ -51,6 +51,7 @@ def showLogin():
 @csrf.exempt
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
+    """Facebook login."""
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -76,7 +77,7 @@ def fbconnect():
         which gives us the key : value for the server access token then we
         split it on colons to pull out the actual token value and replace the
         remaining quotes with nothing so that it can be used directly in the
-        graph api calls
+        graph api calls.
     '''
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
@@ -84,8 +85,6 @@ def fbconnect():
           '&fields=name,id,email' % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
-    # print "url sent for API access:%s"% url
-    # print "API JSON result: %s" % result
     data = json.loads(result)
     login_session['provider'] = 'facebook'
     login_session['username'] = data["name"]
@@ -127,11 +126,12 @@ def fbconnect():
 @csrf.exempt
 @app.route('/fbdisconnect')
 def fbdisconnect():
+    """Disconnect facebook user."""
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
     url = ('https://graph.facebook.com/%s/permissions?access_token=%s'
-           % (facebook_id, access_token))  # NOQA
+           % (facebook_id, access_token))
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -140,6 +140,7 @@ def fbdisconnect():
 @csrf.exempt
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """Google login."""
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -223,10 +224,10 @@ def gconnect():
     output += login_session['username']
     output += '!</h1>'
     output += '<img src="'
-    output += login_session['picture']  # NOQA
+    output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;'
     output += ' " -webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
 
@@ -234,6 +235,7 @@ def gconnect():
 
 
 def createUser(login_session):
+    """Create new user in database."""
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
     session.add(newUser)
@@ -260,6 +262,7 @@ def getUserID(email):
 @csrf.exempt
 @app.route('/gdisconnect')
 def gdisconnect():
+    """Disconnect google user."""
     # Only disconnect a connected user.
     access_token = login_session.get('access_token')
     if access_token is None:
@@ -285,37 +288,37 @@ def gdisconnect():
 # JSON APIs to view Category Information
 @app.route('/categories/<int:category_id>/JSON')
 def categoryListJSON(category_id):
-    """Returns JSON of one category"""
+    """Returns JSON of one category."""
     categories = session.query(Category).filter_by(id=category_id).all()
     return jsonify(Categories=[i.serialize for i in categories])
 
 
 @app.route('/products/<int:category_id>/<int:list_id>/JSON')
 def listItemJSON(category_id, list_id):
-    """Returns JSON of one product in one category"""
+    """Returns JSON of one product in one category."""
     categories = session.query(Category).filter_by(id=category_id).one()
     return jsonify(categories=categories.serialize)
 
 
 @app.route('/categories/JSON')
 def categoriesJSON():
-    """Returns JSON of all categories"""
+    """Returns JSON of all categories."""
     categories = session.query(Category).all()
     return jsonify(categories=[r.serialize for r in categories])
 
 
 @app.route('/products/JSON')
 def productsJSON():
-    """Returns JSON of all products in catalog"""
+    """Returns JSON of all products in catalog."""
     categories = session.query(Product).all()
     return jsonify(categories=[r.serialize for r in categories])
 
 
-# Show all categories - OK
+# Show all categories
 @app.route('/')
 @app.route('/category/')
 def showCategories():
-    """Returns all categories"""
+    """Returns all categories."""
     categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
         return render_template('publiccategories.html', categories=categories)
@@ -326,10 +329,11 @@ def showCategories():
 # Create a new Category
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
-    """Create a new Category"""
+    """Create a new Category."""
+    # The query below is used to populate the left menu
+    categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
         return redirect('/login')
-        categories = session.query(Category).order_by(asc(Category.name))
     if request.method == 'POST':
         newCategory = Category(user_id=login_session['user_id'],
                                name=request.form['name'])
@@ -344,15 +348,15 @@ def newCategory():
 # Edit a Category
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
 def editCategory(category_id):
-    """Edit a Category"""
-    categories = session.query(Category).order_by(asc(Category.name))
+    """Edit a Category."""
     if 'username' not in login_session:
         return redirect('/login')
+    categories = session.query(Category).order_by(asc(Category.name))
+    category = session.query(Category).filter_by(id=category_id).one()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized" \
-               "to edit this category. Please create your own" \
-               "category in order to edit.');}</script>" \
-               "<body onload='myFunction()'>"
+        flash('You are not permitted to edit the {} category. '
+              'Please create your own category to edit.'.format(category.name))
+        return redirect(url_for('newCategory'))
     editedCategory = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -368,15 +372,15 @@ def editCategory(category_id):
 # Delete a Category
 @app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
 def deleteCategory(category_id):
-    """Delete a specific Category and its products"""
-    categories = session.query(Category).order_by(asc(Category.name))
+    """Delete a specific Category and its products."""
     if 'username' not in login_session:
         return redirect('/login')
+    categories = session.query(Category).order_by(asc(Category.name))
+    category = session.query(Category).filter_by(id=category_id).one()
     if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized" \
-               "to delete this category. You can only delete your own" \
-               "created categories.');}</script>" \
-               "<body onload='myFunction()'>"
+        flash('You are not permitted do delete the {} category. Please create '
+              'your own category.'.format(category.name))
+        return redirect(url_for('showCategories'))
     categoryToDelete = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         session.delete(categoryToDelete)
@@ -395,18 +399,19 @@ def deleteCategory(category_id):
 @app.route('/category/<int:category_id>/')
 @app.route('/category/<int:category_id>/list/')
 def showList(category_id):
-    """List all products in one specific category"""
+    """List all products in one specific category."""
     categories = session.query(Category).order_by(asc(Category.name))
     try:
         category = session.query(Category).filter_by(id=category_id).one()
     except NoResultFound:
         category = '1'
-
     creator = getUserInfo(category.user_id)
     items = session.query(Product).filter_by(category_id=category_id).all()
     qtyproducts = len(items)
-    if ('username' not in login_session
-        or creator.id != login_session['user_id']):  # NOQA
+    if (
+       'username' not in login_session
+       or creator.id != login_session['user_id']
+       ):
         return render_template('publiclist.html',
                                items=items,
                                category=category,
@@ -425,16 +430,15 @@ def showList(category_id):
 # Create a new Product
 @app.route('/category/<int:category_id>/list/new/', methods=['GET', 'POST'])
 def newProduct(category_id):
-    """Create a new product in one specific category"""
-    categories = session.query(Category).order_by(asc(Category.name))
+    """Create a new product in one specific category."""
     if 'username' not in login_session:
         return redirect('/login')
-    if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized" \
-               "to add products to this category. Please create your own" \
-               "category in order to add items.');}</script>" \
-               "<body onload='myFunction()'>"
+    categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).first()
+    if login_session['user_id'] != category.user_id:
+        flash('You are not authorized to add products to {} category. Please '
+              'create your own category do add items.'.format(category.name))
+        return redirect(url_for('newCategory'))
     if request.method == 'POST':
         newProduct = Product(name=request.form['name'],
                              description=request.form['description'],
@@ -456,17 +460,16 @@ def newProduct(category_id):
 @app.route('/category/<int:category_id>/list/<int:product_id>/edit',
            methods=['GET', 'POST'])
 def editProduct(category_id, product_id):
-    """Edit a product in one specific category"""
-    categories = session.query(Category).order_by(asc(Category.name))
+    """Edit a product in one specific category."""
     if 'username' not in login_session:
         return redirect('/login')
-    if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized" \
-               "to edit this item in this category. Please create your own" \
-               "category in order to edit productss.');}</script>" \
-               "<body onload='myFunction()'>"
-    editedItem = session.query(Product).filter_by(id=product_id).one()
+    categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
+    if login_session['user_id'] != category.user_id:
+        flash('You are not permitted edit {}. '
+              'Please create your own product to edit.'.format(product.name))
+        return redirect(url_for('newProduct'))
+    editedItem = session.query(Product).filter_by(id=product_id).one()
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -474,6 +477,8 @@ def editProduct(category_id, product_id):
             editedItem.description = request.form['description']
         if request.form['price']:
             editedItem.price = request.form['price']
+        if request.form['picture']:
+            editedItem.picture = request.form['picture']
         session.add(editedItem)
         session.commit()
         flash('Successfully Edited')
@@ -492,7 +497,7 @@ def editProduct(category_id, product_id):
 @app.route('/category/<int:category_id>/list/<int:product_id>/show',
            methods=['GET', 'POST'])
 def showProduct(category_id, product_id):
-    """List product information in one specific category"""
+    """List product information in one specific category."""
     categories = session.query(Category).order_by(asc(Category.name))
     item = session.query(Product).filter_by(id=product_id).one()
     category = session.query(Category).filter_by(id=category_id).one()
@@ -515,16 +520,15 @@ def showProduct(category_id, product_id):
 @app.route('/category/<int:category_id>/list/<int:product_id>/delete',
            methods=['GET', 'POST'])
 def deleteProduct(category_id, product_id):
-    """Delete a product in one specific category"""
-    categories = session.query(Category).order_by(asc(Category.name))
+    """Delete a product in one specific category."""
     if 'username' not in login_session:
         return redirect('/login')
-    if login_session['user_id'] != category.user_id:
-        return "<script>function myFunction() {alert('You are not authorized" \
-               "to delete this item to this category. Please create your" \
-               "own category in order to delete items.');}</script>" \
-               "<body onload='myFunction()'>"
+    categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
+    if login_session['user_id'] != category.user_id:
+        flash('You are not permitted to delete "{}". '
+              'Please create your own product to delete.'.format(product.name))
+        return redirect(url_for('showList(category_id)'))
     itemToDelete = session.query(Product).filter_by(id=product_id).one()
     if request.method == 'POST':
         session.delete(itemToDelete)
@@ -542,7 +546,7 @@ def deleteProduct(category_id, product_id):
 # Show About page
 @app.route('/about/')
 def showAbout():
-    """Show information page"""
+    """Show information page."""
     categories = session.query(Category).order_by(asc(Category.name))
     return render_template('about.html', categories=categories)
 
