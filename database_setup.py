@@ -42,6 +42,7 @@ class Category(Base):
         return {
             'name': self.name,
             'id': self.id,
+            'user_id': self.user_id,
         }
 
 
@@ -66,6 +67,8 @@ class Product(Base):
             'description': self.description,
             'id': self.id,
             'price': self.price,
+            'category_id': self.category_id,
+            'picture': self.picture,
         }
 
 
