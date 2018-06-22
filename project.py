@@ -5,20 +5,22 @@ from flask import (Flask,
                    jsonify,
                    url_for,
                    flash,
-                   session)
+                   session,
+                   g)
 from flask_wtf.csrf import CSRFProtect
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, Category, Product, User
 from flask import session as login_session
-import random
-import string
+from functools import wraps
+from flask import make_response
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+import random
+import string
 import httplib2
 import json
-from flask import make_response
 import requests
 
 app = Flask(__name__)
@@ -325,7 +327,6 @@ def showCategories():
     else:
         return render_template('categories.html', categories=categories)
 
-
 # Create a new Category
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
@@ -465,11 +466,11 @@ def editProduct(category_id, product_id):
         return redirect('/login')
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
+    editedItem = session.query(Product).filter_by(id=product_id).one()
     if login_session['user_id'] != category.user_id:
         flash('You are not permitted edit {}. '
-              'Please create your own product to edit.'.format(product.name))
-        return redirect(url_for('newProduct'))
-    editedItem = session.query(Product).filter_by(id=product_id).one()
+              'Please create your own product to edit.'.format(editedItem.name))
+        return redirect(url_for('newProduct', category_id=category_id))
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -525,10 +526,12 @@ def deleteProduct(category_id, product_id):
         return redirect('/login')
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
+    #    itemToDelete = session.query(Product).filter_by(id=product_id).one()
     if login_session['user_id'] != category.user_id:
-        flash('You are not permitted to delete "{}". '
-              'Please create your own product to delete.'.format(product.name))
-        return redirect(url_for('showList(category_id)'))
+        flash('You are not permitted to delete this product. '
+              'Please create your own product to delete.')
+        return redirect(url_for('showList', category_id=category_id,
+                                categories=categories))
     itemToDelete = session.query(Product).filter_by(id=product_id).one()
     if request.method == 'POST':
         session.delete(itemToDelete)
